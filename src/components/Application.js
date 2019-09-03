@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DayList from "./DayList";
+import Appointment from "components/Appointment";
 
 import "components/Application.scss";
 
@@ -46,7 +47,7 @@ const appointments = [
   },
   {
     id: 5,
-    time: "11am",
+    time: "4:30pm",
     interview: {
       student: "Eddy Chen",
       interviewer: {
@@ -77,7 +78,11 @@ const days = [
 ];
 
 export default function Application(props) {
-  const [day, setDay] = useState("Monday");
+  const [day, setDay] = useState("Tuesday");
+  const appointmentsJSX = appointments.map(appointment => {
+    return <Appointment key={appointment.id} {...appointment} />;
+  });
+  appointmentsJSX.push(<Appointment key="last" time="5pm" />);
 
   return (
     <main className="layout">
@@ -97,9 +102,7 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
-      </section>
+      <section className="schedule">{appointmentsJSX}</section>
     </main>
   );
 }
