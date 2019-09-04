@@ -13,7 +13,9 @@ export default function Application(props) {
     appointments: {},
     interviewers: {}
   });
+
   const setDay = day => setState({ ...state, day });
+
   useEffect(() => {
     Promise.all([
       axios.get("/api/days"),
@@ -29,8 +31,8 @@ export default function Application(props) {
           interviewers: interviewers.data
         }));
       })
-      .catch(err =>
-        console.error("ERROR IN APPLICATION COMPONENT", err.config)
+      .catch(
+        err => console.error("ERROR IN APPLICATION COMPONENT", err.config) // this causes an error with tests?
       );
     return;
   }, []);

@@ -12,7 +12,8 @@ export function getInterview(state, interview) {
   if (interview === null) {
     return null;
   }
-  const interviewObj = interview;
+  const interviewObj = { ...interview };
+
   interviewObj.interviewer = state.interviewers[interviewObj.interviewer];
   return interviewObj;
 }
