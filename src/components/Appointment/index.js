@@ -4,7 +4,6 @@ import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
 
 import "components/Appointment/styles.scss";
-// import InterviewerList from "components/InterviewerList";
 
 export default function Appointment(props) {
   const { id, time, interview } = props;
