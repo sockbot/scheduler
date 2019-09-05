@@ -21,7 +21,11 @@ export default function Application(props) {
   const setDay = day => setState({ ...state, day });
 
   function bookInterview(id, interview) {
-    console.log(id, interview);
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    console.log("In Application.js", appointment);
   }
 
   useEffect(() => {
@@ -55,6 +59,7 @@ export default function Application(props) {
           {...appointment}
           interview={interview}
           interviewersForDay={interviewersForDay}
+          bookInterview={bookInterview}
         />
       );
     }
