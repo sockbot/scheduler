@@ -6,6 +6,7 @@ import Form from "components/Appointment/Form";
 import useVisualMode from "hooks/useVisualMode";
 
 import "components/Appointment/styles.scss";
+import { getInterviewersForDay } from "helpers/selectors";
 
 const EMPTY = "EMPTY";
 const SHOW = "SHOW";
@@ -15,7 +16,16 @@ export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   );
-  const { id, time, interview } = props;
+  const { id, time, interview, interviewersForDay } = props;
+
+  function save(name, interviewer) {
+    const interview = {
+      student: name,
+      interviewer
+    };
+    console.log(name, interviewer);
+  }
+
   return (
     <article className="appointment">
       <Header key={id} time={time} />
@@ -24,7 +34,11 @@ export default function Appointment(props) {
         <Show student={interview.student} interviewer={interview.interviewer} />
       )}
       {mode === CREATE && (
-        <Form interviewers={[]} onCancel={() => transition(EMPTY)} />
+        <Form
+          interviewers={interviewersForDay}
+          onCancel={() => transition(EMPTY)}
+          onSave={save}
+        />
       )}
     </article>
   );
