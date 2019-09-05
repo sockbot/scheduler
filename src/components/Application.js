@@ -30,18 +30,18 @@ export default function Application(props) {
       [id]: appointment
     };
     if (interview.interviewer == false || interview.student == false) {
-      console.error("Interviewer and Student cannot be blank");
-      return;
+      return console.error("Interviewer and Student cannot be blank");
     } else {
-      axios
+      return axios
         .put(`/api/appointments/${id}`, { interview })
-        .then(res => console.log(res))
+        .then(() => {
+          return setState({
+            ...state,
+            appointments
+          });
+        })
         .catch(err => console.error(err));
     }
-    setState({
-      ...state,
-      appointments
-    });
   }
 
   useEffect(() => {
