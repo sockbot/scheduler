@@ -12,17 +12,16 @@ const SHOW = "SHOW";
 const CREATE = "CREATE";
 
 export default function Appointment(props) {
-  const { mode, transition, back } = useVisualMode(
-    props.interview ? SHOW : EMPTY
-  );
   const { id, time, interview, interviewersForDay, bookInterview } = props;
+  const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
   function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer
     };
-    bookInterview(interview);
+    bookInterview(id, interview);
+    transition(SHOW);
   }
 
   return (
