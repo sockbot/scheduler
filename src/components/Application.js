@@ -29,6 +29,11 @@ export default function Application(props) {
       ...state.appointments,
       [id]: appointment
     };
+    console.log(appointments);
+    axios
+      .put(`/api/appointments/${id}`, { interview })
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
     setState({
       ...state,
       appointments

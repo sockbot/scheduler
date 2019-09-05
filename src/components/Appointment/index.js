@@ -4,6 +4,7 @@ import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
 import useVisualMode from "hooks/useVisualMode";
+import axios from "axios";
 
 import "components/Appointment/styles.scss";
 
@@ -13,7 +14,7 @@ const CREATE = "CREATE";
 
 export default function Appointment(props) {
   const { id, time, interview, interviewersForDay, bookInterview } = props;
-  const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
+  const { mode, transition } = useVisualMode(interview ? SHOW : EMPTY);
 
   function save(name, interviewer) {
     const interview = {
@@ -29,7 +30,11 @@ export default function Appointment(props) {
       <Header key={id} time={time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && (
-        <Show student={interview.student} interviewer={interview.interviewer} />
+        <Show
+          student={interview.student}
+          interviewer={interview.interviewer}
+          onDelete={() => axios.get("/api/debug/reset")}
+        />
       )}
       {mode === CREATE && (
         <Form
