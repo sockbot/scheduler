@@ -5,6 +5,7 @@ import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
 import Status from "components/Appointment/Status";
 import Confirm from "components/Appointment/Confirm";
+import Error from "components/Appointment/Error";
 import useVisualMode from "hooks/useVisualMode";
 
 import "components/Appointment/styles.scss";
@@ -16,6 +17,8 @@ const SAVING = "SAVING";
 const DELETING = "DELETING";
 const CONFIRM = "CONFIRM";
 const EDIT = "EDIT";
+const ERROR_SAVE = "ERROR_SAVE";
+const ERROR_DELETE = "ERROR_DELETE";
 
 export default function Appointment(props) {
   const {
@@ -34,12 +37,22 @@ export default function Appointment(props) {
       interviewer
     };
     transition(SAVING);
-    bookInterview(id, interview).then(() => transition(SHOW));
+    bookInterview(id, interview)
+      .then(() => transition(SHOW))
+      .catch(err => {
+        console.error("SAVING ERROR:", err);
+        transition(ERROR_SAVE);
+      });
   }
 
-  function del(id) {
+  function destroy(id) {
     transition(DELETING);
-    cancelInterview(id).then(() => transition(EMPTY));
+    cancelInterview(id)
+      .then(() => transition(EMPTY))
+      .catch(err => {
+        console.error("DELETING ERROR", err);
+        transition(ERROR_DELETE);
+      });
   }
 
   return (
@@ -67,7 +80,7 @@ export default function Appointment(props) {
         <Confirm
           message={"Are you sure you would like to delete?"}
           onCancel={back}
-          onConfirm={del}
+          onConfirm={destroy}
           appointmentId={id}
         />
       )}
@@ -79,6 +92,12 @@ export default function Appointment(props) {
           name={interview.student}
           interviewer={interview.interviewer.id}
         />
+      )}
+      {mode === ERROR_SAVE && (
+        <Error message={"ERROR SAVE"} onClose={() => back()} />
+      )}
+      {mode === ERROR_DELETE && (
+        <Error message={"ERROR DELETE"} onClose={() => back()} />
       )}
     </article>
   );

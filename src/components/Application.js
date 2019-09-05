@@ -32,22 +32,19 @@ export default function Application(props) {
     if (interview.interviewer == false || interview.student == false) {
       return console.error("Interviewer and Student cannot be blank");
     } else {
-      return axios
-        .put(`/api/appointments/${id}`, { interview })
-        .then(() => {
-          return setState({
-            ...state,
-            appointments
-          });
-        })
-        .catch(err => console.error(err));
+      return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
+        return setState({
+          ...state,
+          appointments
+        });
+      });
+      // allow errors to be caught in Appointment
     }
   }
 
   function cancelInterview(id) {
-    return axios
-      .delete(`/api/appointments/${id}`)
-      .catch(err => console.error(err));
+    return axios.delete(`/api/appointments/${id}`);
+    // allow errors to be caught in Appointment
   }
 
   useEffect(() => {
