@@ -2,7 +2,7 @@ import React from "react";
 import Button from "components/Button";
 
 export default function Confirm(props) {
-  const { message, onConfirm, onCancel } = props;
+  const { message, onConfirm, onCancel, appointmentId } = props;
 
   return (
     <main className="appointment__card appointment__card--confirm">
@@ -11,7 +11,7 @@ export default function Confirm(props) {
         <Button danger onClick={onCancel}>
           Cancel
         </Button>
-        <Button danger onClick={onConfirm}>
+        <Button danger onClick={() => onConfirm(appointmentId)}>
           Confirm
         </Button>
       </section>
