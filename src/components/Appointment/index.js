@@ -5,7 +5,6 @@ import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
 import Status from "components/Appointment/Status";
 import useVisualMode from "hooks/useVisualMode";
-import axios from "axios";
 
 import "components/Appointment/styles.scss";
 
@@ -13,9 +12,17 @@ const EMPTY = "EMPTY";
 const SHOW = "SHOW";
 const CREATE = "CREATE";
 const SAVING = "SAVING";
+const DELETING = "DELETING";
 
 export default function Appointment(props) {
-  const { id, time, interview, interviewersForDay, bookInterview } = props;
+  const {
+    id,
+    time,
+    interview,
+    interviewersForDay,
+    bookInterview,
+    cancelInterview
+  } = props;
   const { mode, transition } = useVisualMode(interview ? SHOW : EMPTY);
 
   function save(name, interviewer) {
@@ -27,6 +34,11 @@ export default function Appointment(props) {
     bookInterview(id, interview).then(() => transition(SHOW));
   }
 
+  function del(id) {
+    transition(DELETING);
+    cancelInterview(id).then(() => transition(EMPTY));
+  }
+
   return (
     <article className="appointment">
       <Header key={id} time={time} />
@@ -35,7 +47,8 @@ export default function Appointment(props) {
         <Show
           student={interview.student}
           interviewer={interview.interviewer}
-          onDelete={() => axios.get("/api/debug/reset")}
+          onDelete={del}
+          appointmentId={id}
         />
       )}
       {mode === CREATE && (
@@ -46,6 +59,7 @@ export default function Appointment(props) {
         />
       )}
       {mode === SAVING && <Status message={SAVING} />}
+      {mode === DELETING && <Status message={DELETING} />}
     </article>
   );
 }

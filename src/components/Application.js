@@ -44,6 +44,12 @@ export default function Application(props) {
     }
   }
 
+  function cancelInterview(id) {
+    return axios
+      .delete(`/api/appointments/${id}`)
+      .catch(err => console.error(err));
+  }
+
   useEffect(() => {
     Promise.all([
       axios.get("/api/days"),
@@ -76,6 +82,7 @@ export default function Application(props) {
           interview={interview}
           interviewersForDay={interviewersForDay}
           bookInterview={bookInterview}
+          cancelInterview={cancelInterview}
         />
       );
     }
