@@ -29,8 +29,9 @@ export default function Application(props) {
       ...state.appointments,
       [id]: appointment
     };
+
     if (interview.interviewer == false || interview.student == false) {
-      return console.error("Interviewer and Student cannot be blank");
+      return Promise.reject("Interviewer and Student cannot be blank");
     } else {
       return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
         return setState({
