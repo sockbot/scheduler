@@ -1,7 +1,44 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
 
 export default function useApplicationData() {
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET APPLICATION DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
+  const SET_APPOINTMENTS = "SET_APPOINTMENTS";
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case SET_DAY:
+        return { ...state, day: action.day };
+      case SET_APPLICATION_DATA:
+        return {
+          ...state,
+          days: action.days,
+          appointments: action.appointments,
+          interviewers: action.interviewers
+        };
+      case SET_APPOINTMENTS:
+        return {
+          ...state,
+          appointments: action.appointments
+        };
+      case SET_INTERVIEW:
+        return { ...state, interview: action.interview };
+      default:
+        throw new Error(
+          `Tried to reduce with unsupported action type: ${action.type}`
+        );
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, {
+    day: "Monday",
+    days: [],
+    appointments: {},
+    interviewers: {}
+  });
+
   useEffect(() => {
     Promise.all([
       axios.get("/api/days"),
@@ -10,27 +47,20 @@ export default function useApplicationData() {
     ])
       .then(all => {
         const [days, appointments, interviewers] = all;
-        setState(prev => ({
-          ...prev,
+        dispatch({
+          type: SET_APPLICATION_DATA,
           days: days.data,
           appointments: appointments.data,
           interviewers: interviewers.data
-        }));
+        });
       })
       .catch(
-        err => console.error("ERROR IN APPLICATION COMPONENT", err.config) // this causes an error with tests?
+        err => console.error("ERROR IN APPLICATION COMPONENT", err) // this causes an error with tests?
       );
     return;
   }, []);
 
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });
-
-  const setDay = day => setState({ ...state, day });
+  const setDay = day => dispatch({ type: SET_DAY, day });
 
   const bookInterview = (id, interview) => {
     const appointment = {
@@ -46,8 +76,8 @@ export default function useApplicationData() {
       return Promise.reject("Interviewer and Student cannot be blank");
     } else {
       return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
-        return setState({
-          ...state,
+        return dispatch({
+          type: SET_APPOINTMENTS,
           appointments
         });
       });
