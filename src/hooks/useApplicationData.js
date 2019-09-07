@@ -58,7 +58,7 @@ export default function useApplicationData() {
         err => console.error("ERROR IN APPLICATION COMPONENT", err) // this causes an error with tests?
       );
     return;
-  }, []);
+  }, [state.appointments]);
 
   const setDay = day => dispatch({ type: SET_DAY, day });
 
@@ -71,8 +71,7 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
-    if (interview.interviewer == false || interview.student == false) {
+    if (!interview.interviewer || !interview.student) {
       return Promise.reject("Interviewer and Student cannot be blank");
     } else {
       return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
