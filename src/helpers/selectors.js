@@ -27,3 +27,13 @@ export function getInterviewersForDay(state, day) {
   intObj.interviewers.forEach(id => results.push(state.interviewers[id]));
   return results;
 }
+
+export function getSpotsForDay(state, dayName) {
+  const appointments = getAppointmentsForDay(state, dayName);
+  return appointments.reduce((prev, curr) => {
+    if (curr.interview !== null) {
+      return prev - 1;
+    }
+    return prev;
+  }, appointments.length);
+}
