@@ -83,14 +83,38 @@ describe("Application", () => {
     expect(getByText(monday, /2 spots remaining/i)).toBeInTheDocument();
   });
 
-  it("loads data, edits an interview and keeps the spots remaining for Monday the same", () => {
-    // 1. Render the Application.
-    // 2. Wait until the text "Archie Cohen" is displayed.
-    // 3. Click the "Edit" button on the Archie Cohen appointment.
-    // 4. Change the student name to "Lydia Miller-Jones" and the Interviewer to the first interviewer.
-    // 5. Click the "Save" button on the confirmation.
-    // 6. Check that the element with the text "Saving" is displayed.
-    // 7. Check that the appointment is with "Lydia Miller-Jones" and "Sylvia Palmer".
-    // 8. Check that the DayListItem with the text "Monday" also has the text "1 spot remaining".
+  it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {
+    const { container } = render(<Application />);
+
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+
+    const bookedAppointment = getAllByTestId(container, "appointment").find(
+      name => queryByText(name, "Archie Cohen")
+    );
+
+    fireEvent.click(getByAltText(bookedAppointment, /edit/i));
+
+    fireEvent.change(
+      getByPlaceholderText(bookedAppointment, /enter student name/i),
+      {
+        target: { value: "Lydia Miller-Jones" }
+      }
+    );
+
+    fireEvent.click(getAllByTestId(bookedAppointment, "interviewers__item")[0]);
+
+    fireEvent.click(getByText(bookedAppointment, /save/i));
+
+    expect(getByText(bookedAppointment, /saving/i)).toBeInTheDocument();
+
+    await waitForElement(() =>
+      getByText(bookedAppointment, /lydia miller-jones/i)
+    );
+
+    const monday = getAllByTestId(container, "day").find(day =>
+      queryByText(day, "Monday")
+    );
+
+    expect(getByText(monday, /1 spot remaining/i)).toBeInTheDocument();
   });
 });
