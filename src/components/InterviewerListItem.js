@@ -12,7 +12,11 @@ export default function InterviewerListItem(props) {
   const imageItemClasses = classNames("interviewers__item-image");
 
   return (
-    <li className={listItemClasses} onClick={onChange}>
+    <li
+      className={listItemClasses}
+      onClick={onChange}
+      data-testid="interviewers__item"
+    >
       <img className={imageItemClasses} src={avatar} alt={name} />
       {selected ? name : ""}
     </li>
