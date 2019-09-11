@@ -7,7 +7,7 @@ export default function Form(props) {
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
   const [error, setError] = useState("");
 
-  const { onSave } = props;
+  const { onSave, onCancel } = props;
 
   function reset() {
     setName("");
@@ -16,7 +16,7 @@ export default function Form(props) {
 
   function cancel() {
     reset();
-    props.onCancel();
+    onCancel();
   }
 
   function validate() {
