@@ -10,7 +10,6 @@ export default function useApplicationData() {
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET APPLICATION DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
-  const SET_APPOINTMENTS = "SET_APPOINTMENTS";
 
   function reducer(state, action) {
     switch (action.type) {
@@ -22,11 +21,6 @@ export default function useApplicationData() {
           days: action.days,
           appointments: action.appointments,
           interviewers: action.interviewers
-        };
-      case SET_APPOINTMENTS:
-        return {
-          ...state,
-          appointments: action.appointments
         };
       case SET_INTERVIEW:
         const appointment = {
