@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "components/Appointment/Header";
 import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
@@ -55,11 +55,20 @@ export default function Appointment(props) {
       });
   }
 
+  useEffect(() => {
+    if (mode === EMPTY && interview) {
+      transition(SHOW);
+    }
+    if (mode === SHOW && interview === null) {
+      transition(EMPTY);
+    }
+  }, [interview, transition, mode]);
+
   return (
     <article className="appointment" data-testid="appointment">
       <Header key={id} time={time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-      {mode === SHOW && (
+      {mode === SHOW && interview && (
         <Show
           student={interview.student}
           interviewer={interview.interviewer}

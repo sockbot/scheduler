@@ -36,7 +36,17 @@ export default function useApplicationData() {
       .catch(
         err => console.error("ERROR IN APPLICATION COMPONENT:", err) // this causes an error with tests?
       );
-    return;
+
+    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
+    socket.onmessage = event => {
+      const { type, id, interview } = JSON.parse(event.data);
+      if (type === SET_INTERVIEW) {
+        dispatch({ type, id, interview });
+      }
+    };
+
+    return () => socket.close();
   }, []);
 
   const setDay = day => dispatch({ type: SET_DAY, day });
@@ -45,13 +55,9 @@ export default function useApplicationData() {
     if (!interview.interviewer || !interview.student) {
       return Promise.reject("Interviewer and Student cannot be blank");
     } else {
-      return axios.put(`/api/appointments/${id}`, { interview }).then(() =>
-        dispatch({
-          type: SET_INTERVIEW,
-          id,
-          interview
-        })
-      );
+      return axios
+        .put(`/api/appointments/${id}`, { interview })
+        .then(() => dispatch({ type: SET_INTERVIEW, id, interview }));
       // allow errors to be caught in Appointment component
     }
   };
